@@ -11,7 +11,7 @@ module Faker
     def initialize(generator, max_retries)
       @generator = generator
       @max_retries = max_retries
-      @previous_results = Hash.new { |hash, key| hash[key] = Set.new }
+      reset_previous_results!
     end
 
     # rubocop:disable Style/MethodMissingSuper
@@ -38,7 +38,7 @@ module Faker
     RetryLimitExceeded = Class.new(StandardError)
 
     def clear
-      @previous_results.clear
+      reset_previous_results!
     end
 
     def self.clear
@@ -51,6 +51,12 @@ module Faker
       values.each do |value|
         @previous_results[[name, arguments]] << value
       end
+    end
+
+    private
+
+    def reset_previous_results!
+      @previous_results = Hash.new { |hash, key| hash[key] = Set.new }
     end
   end
 end
